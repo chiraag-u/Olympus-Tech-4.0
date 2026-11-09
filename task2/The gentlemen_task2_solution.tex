@@ -1,0 +1,249 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage[space]{grffile}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\title{\textbf{Olympus Tech 4.0 Part Two: Planetary Archive Analysis}\\[0.5em]
+\large Habitability and Settlement Potential Analysis across Exoplanetary Environments}
+\author{\textbf{Team:} The gentlemen}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+
+\section*{Overview}
+
+The planetary archive indicates that a planet's holistic environment matters substantially more than any single isolated characteristic. The most decisive determinants of high settlement potential are \textbf{accessible liquid surface water}, a \textbf{breathable, manageable atmosphere}, and the \textbf{absence of catastrophic hazards}. Worlds devoid of primary environmental hazards achieve the highest habitability scores in the archive, whereas thermal extremes and ionizing radiation constitute the most severe obstacles to colonization.
+
+The primary empirical findings from our analysis are:
+\begin{itemize}[noitemsep]
+    \item \textbf{Hazard-free worlds} attain an average settlement score of \textbf{83.9}, the highest among all categorized planetary cohorts.
+    \item \textbf{Oxygen} provides maximum benefit in moderate concentrations ($20$--$25\%$), whereas excessive carbon dioxide ($>70\%$) and methane ($>50\%$) correlate with sharp drops in habitability.
+    \item \textbf{Single-star systems} outperform multi-star environments, averaging \textbf{60.1} compared to binary and triple-star architectures.
+    \item \textbf{Planetary rings} correspond to a slight settlement penalty ($\Delta = -2.6$ to $-2.7$ points), while satellite (moon) count exhibits only a weak, non-linear correlation ($r = -0.09$).
+    \item \textbf{Rogue and tidally locked worlds} face substantial energetic and climatic handicaps, scoring below conventional orbiting planets on average.
+    \item \textbf{Independent Investigation:} Global oceans and surface seas provide one of the single strongest settlement advantages in the entire archive ($+14.9$ score premium over arid worlds).
+\end{itemize}
+
+
+\vspace{1em}
+
+\section*{Q1. How does the recorded primary hazard relate to settlement potential?}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.88\textwidth]{"task2_solution_plots/q1_primary_hazard.png"}
+    \label{fig:q1_primary_hazard}
+\end{figure}
+
+The recorded primary hazard demonstrates a decisive, statistically significant correlation with planetary settlement potential.
+
+\subsection*{Highest-Scoring Hazard Cohorts}
+\begin{itemize}[noitemsep]
+    \item \textbf{None:} Average score \textbf{83.9} ($100\%$ score $\ge 60$; $n = 9$ planets)
+    \item \textbf{Seasonal Storms:} Average score \textbf{79.1} ($100\%$ score $\ge 60$; $n = 3$ planets)
+    \item \textbf{Thermal Vents:} Average score \textbf{73.7} ($100\%$ score $\ge 60$; $n = 6$ planets)
+    \item \textbf{Unknown Anomaly:} Average score \textbf{63.9} ($56\%$ score $\ge 60$; $n = 1{,}315$ planets)
+\end{itemize}
+
+\subsection*{Lowest-Scoring Hazard Cohorts}
+\begin{itemize}[noitemsep]
+    \item \textbf{Temperature Extremes:} Average score \textbf{54.8} ($29\%$ score $\ge 60$; $n = 41$ planets)
+    \item \textbf{Radiation:} Average score \textbf{55.5} ($30\%$ score $\ge 60$; $n = 1{,}241$ planets)
+    \item \textbf{Toxic Air:} Average score \textbf{56.1} ($31\%$ score $\ge 60$; $n = 829$ planets)
+    \item \textbf{Seismic Activity:} Average score \textbf{57.2} ($37\%$ score $\ge 60$; $n = 1{,}392$ planets)
+\end{itemize}
+
+Worlds designated as \textbf{``None''} achieve the benchmark average score of \textbf{83.9}. The complete absence of primary environmental threats drastically minimizes the engineering, life-support, structural hardening, and medical infrastructure required for human colonies.
+
+Conversely, the most detrimental hazards are \textbf{temperature extremes}, \textbf{radiation}, and \textbf{atmospheric toxicity}. Interestingly, seasonal storm worlds score considerably higher than continuous meteorological hazards, demonstrating that predictable, transient hazards are far more manageable than perpetual ambient degradation.
+
+\noindent\textbf{Answer:} Hazard-free and predictably managed environments offer superior settlement viability. Severe thermal fluctuations, ionizing radiation, and toxic atmospheres represent the most detrimental planetary inhibitors.
+
+
+\vspace{1em}
+
+\section*{Q2. How do atmospheric gas levels relate to settlement potential?}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.98\textwidth]{"task2_solution_plots/q2_atmospheric_gases.png"}
+    \label{fig:q2_atmospheric_gases}
+\end{figure}
+
+Atmospheric chemistry does not adhere to monotonic linear scaling; rather, biological viability depends on specific equilibrium windows.
+
+\subsection*{Oxygen ($\text{O}_2$)}
+\begin{itemize}[noitemsep]
+    \item Planets possessing an Earth-analog \textbf{20--25\% Oxygen} band achieve an average score of \textbf{66.9}.
+    \item Anoxic worlds with \textbf{0--1\% Oxygen} average only \textbf{53.7}.
+    \item Hyperoxic concentrations ($>25\%$) do not yield further meaningful score increases.
+\end{itemize}
+This highlights that moderate, breathable partial pressures represent the ideal habitable zone.
+
+\subsection*{Carbon Dioxide ($\text{CO}_2$)}
+\begin{itemize}[noitemsep]
+    \item Atmospheres in the highest $\text{CO}_2$ tier (\textbf{$>70\%$}) drop to an average score of \textbf{54.2}.
+    \item Low to moderate $\text{CO}_2$ inventories consistently outperform runaway greenhouse concentrations.
+\end{itemize}
+Dense carbon dioxide envelopes produce toxic hypercapnia and severe thermal trapping, undermining surface habitability.
+
+\subsection*{Methane ($\text{CH}_4$)}
+\begin{itemize}[noitemsep]
+    \item Heavy methane concentrations (\textbf{$>50\%$}) yield an average score of \textbf{53.2}.
+    \item Trace and minimal methane concentrations consistently support higher overall suitability.
+\end{itemize}
+
+\noindent\textbf{Answer:} Moderate oxygen levels ($20$--$25\%$) correlate strongly with optimal settlement ratings. In contrast, runaway carbon dioxide ($>70\%$) or methane ($>50\%$) impose heavy habitability penalties.
+
+
+\vspace{1em}
+
+\section*{Q3. How does stellar multiplicity relate to settlement potential?}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{"task2_solution_plots/q3_stellar_multiplicity.png"}
+    \label{fig:q3_stellar_multiplicity}
+\end{figure}
+
+Planetary hosts were classified by their stellar configuration into single, binary, triple, and higher-order companion systems:
+
+\begin{table}[htbp]
+\centering
+\label{tab:stellar_multiplicity}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Star System} & \textbf{Planets ($n$)} & \textbf{Average Score} & \textbf{Score $\ge$ 60 (\%)} \\
+\midrule
+Single-star     & 4{,}010 & \textbf{60.1} & \textbf{45\%} \\
+Binary-star     & 1{,}841 & 58.1          & 39\%          \\
+Triple-star     & 306     & 56.7          & 33\%          \\
+Other companion & 243     & 55.7          & 29\%          \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Single-star planetary systems display the highest average score and the highest proportion ($45\%$) of prime candidates ($\text{score} \ge 60$). Multi-star orbital dynamics introduce gravitational perturbations, complex insolation cycles, and chaotic climate oscillations that degrade long-term settlement stability.
+
+\noindent\textbf{Answer:} Single-star planets exhibit the highest settlement potential. Binary, triple, and complex companion systems show progressive score declines, although the multiplicity penalty remains moderate rather than prohibitive.
+
+
+\vspace{1em}
+
+\section*{Q4. How do moons and rings relate to settlement potential?}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.98\textwidth]{"task2_solution_plots/q4_moons_and_rings.png"}
+    \label{fig:q4_moons_rings}
+\end{figure}
+
+\subsection*{Number of Moons}
+Planets possessing \textbf{one moon} exhibit the highest well-populated mean score at \textbf{62.2}, followed closely by two-moon worlds at \textbf{60.7}. In comparison, moonless planets average \textbf{56.6}.
+
+However, the aggregate correlation between satellite count and settlement score is negligible ($r = -0.09$). Beyond two satellites, scores oscillate unpredictably without a coherent physical trend. Because extreme moon counts contain small sample sizes, they should not be viewed as deterministic habitability indicators.
+
+\subsection*{Planetary Rings}
+\begin{itemize}[noitemsep]
+    \item Planets \textbf{without rings:} average score \textbf{59.4}.
+    \item Planets \textbf{with rings:} average score \textbf{56.8}.
+\end{itemize}
+This represents a discernible penalty of \textbf{2.7 points}. Ring systems may indicate recent debris accretion, micrometeoroid collision hazards, or shade-induced climate disruption, though the effect is modest compared to hazard and hydrological factors.
+
+\noindent\textbf{Answer:} One to two natural satellites correlate with improved settlement conditions, but moon count alone is not a primary predictive metric. Ringless planets score slightly higher than ringed worlds, representing a secondary screening factor.
+
+
+\vspace{1em}
+
+\section*{Q5. How do rogue and tidally locked planets compare with other planets?}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.98\textwidth]{"task2_solution_plots/q5_rogue_and_tidally_locked.png"}
+    \label{fig:q5_rogue_tidally_locked}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\label{tab:rogue_tidally_locked}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Planet Group} & \textbf{Planets ($n$)} & \textbf{Average Score} & \textbf{Score $\ge$ 60 (\%)} \\
+\midrule
+Standard Orbiting Planets & 5{,}127 & \textbf{59.8} & \textbf{44.0\%} \\
+Rogue Planets             & 537     & 56.7          & 33.0\%          \\
+Tidally Locked Planets    & 736     & 56.6          & 37.1\%          \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Standard orbiting worlds outperform both rogue and tidally locked planets across both mean score and high-viability yield ($44.0\%$ vs.\ $33.0\%$ and $37.1\%$). Rogue planets suffer from the absence of stellar radiative heating, necessitating artificial or geothermal energy sources. Tidally locked worlds experience extreme temperature dichotomy, violent terminator storms, and atmospheric collapse on frozen night-sides. Nonetheless, select high-scoring candidates exist in both categories, indicating neither condition is an absolute disqualifier.
+
+\noindent\textbf{Answer:} Both rogue and tidally locked planets suffer statistically significant habitability penalties, yet top-tier outliers demonstrate that exceptional geological or local environments can still sustain colonies.
+
+
+\vspace{1em}
+
+\section*{Independent Investigation: Water Availability and Settlement Potential}
+
+\subsection*{Hypothesis and Scope}
+Beyond the primary question prompts, we evaluated the hypothesis that \textbf{accessible liquid water is the primary thermodynamic and biological gating factor for planetary settlement}. We analyzed scores across categorized water availability classifications: global oceans, surface seas, subsurface reservoirs, trace moisture, surface ice, and completely arid worlds.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.98\textwidth]{"task2_solution_plots/independent_water_availability.png"}
+    \label{fig:water_availability}
+\end{figure}
+
+\subsection*{Key Findings}
+\begin{itemize}[noitemsep]
+    \item \textbf{Global Ocean:} Average score \textbf{65.4}; \textbf{65\%} score $\ge 60$.
+    \item \textbf{Surface Seas:} Average score \textbf{63.8}; \textbf{62\%} score $\ge 60$.
+    \item \textbf{No Water (Arid):} Average score \textbf{50.5}; \textbf{11\%} score $\ge 60$.
+    \item \textbf{Surface Ice:} Average score \textbf{47.9}; \textbf{10\%} score $\ge 60$.
+\end{itemize}
+
+A substantial score delta of \textbf{14.9 points} separates global ocean worlds from water-deficient planets. Worlds possessing liquid surface reservoirs are over six times more likely to exceed the viable colony threshold ($\ge 60$) than dry or entirely frozen planets. While water alone does not guarantee safety (some marine worlds suffer radiation or extreme weather), surface hydrology serves as the most effective first-stage screening filter.
+
+\noindent\textbf{Conclusion:} The hypothesis is strongly substantiated. Surface liquid oceans and seas provide one of the highest positive settlement dividends in the entire planetary database.
+
+
+\vspace{1em}
+
+\section*{Overall Synthesis and Conclusion}
+
+Colonization viability in the planetary archive is governed by the synergistic convergence of multiple environmental factors:
+\begin{enumerate}[noitemsep]
+    \item \textbf{Hazard Mitigation:} Complete absence of unshielded radiation, severe thermal fluctuations, or lethal atmospheric toxicity.
+    \item \textbf{Liquid Hydrology:} Presence of accessible surface oceans or seas.
+    \item \textbf{Equilibrium Atmosphere:} Moderate oxygen partial pressures ($20$--$25\%$) paired with low carbon dioxide ($<70\%$) and methane ($<50\%$).
+    \item \textbf{Stable Stellar Architecture:} Single-star systems providing uniform radiative equilibrium.
+    \item \textbf{Rotational Dynamics:} Standard day-night planetary rotation avoiding synchronous tidal locking or interstellar rogue isolation.
+\end{enumerate}
+
+No single feature guarantees settlement success; rather, the premier candidates are those rare worlds where benign hazards, liquid oceans, and stable stellar insolation occur concurrently.
+
+\end{document}
