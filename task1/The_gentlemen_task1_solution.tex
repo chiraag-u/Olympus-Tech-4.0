@@ -1,0 +1,328 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage[space]{grffile}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\title{\textbf{Olympus Tech 4.0  Part One: Signal in the Static}\\[0.5em]
+\large Detection and Trajectory Estimation of a Faint Moving Object}
+\author{\textbf{Team:} The gentlemen}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview}
+
+Our astronomical detection pipeline followed a structured seven-step methodology:
+\begin{enumerate}[noitemsep]
+    \item Load and inspect every FITS frame.
+    \item Build a reference image representing the fixed sky.
+    \item Subtract the reference from every frame.
+    \item Detect possible sources using the measured noise level.
+    \item Link detections that follow a smooth path across the full sequence.
+    \item Measure the object's position and signal strength.
+    \item Test whether the detection could be caused by noise or image artefacts.
+\end{enumerate}
+
+The final result is a reliable detection in all 20 frames. The source follows a smooth, curved trajectory from approximately \textbf{(39.80, 44.67)} to \textbf{(65.53, 53.86)} pixels.
+
+\section{Loading and Displaying the FITS Frames}
+
+The FITS files were extracted from \texttt{fits.zip}, naturally sorted by filename, and loaded as floating-point image arrays. Missing pixel values, if present, were replaced with the median value of the corresponding frame.
+
+Every raw frame was examined with:
+\begin{itemize}[noitemsep]
+    \item $X$ and $Y$ pixel coordinates;
+    \item a grayscale intensity display;
+    \item a labelled colorbar showing flux in Analog-to-Digital Units (ADU);
+    \item a common display range for easier comparison between frames.
+\end{itemize}
+
+The fixed stars remain in the same positions throughout the sequence. The moving object is too faint to follow confidently in the raw-frame montage alone, which is why reference subtraction is necessary.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.23\textwidth}
+        \includegraphics[width=\textwidth]{"The gentlemen_FITS_outputs/raw_frames/raw_frame_00.png"}
+        \caption{Frame 00}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.23\textwidth}
+        \includegraphics[width=\textwidth]{"The gentlemen_FITS_outputs/raw_frames/raw_frame_06.png"}
+        \caption{Frame 06}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.23\textwidth}
+        \includegraphics[width=\textwidth]{"The gentlemen_FITS_outputs/raw_frames/raw_frame_12.png"}
+        \caption{Frame 12}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.23\textwidth}
+        \includegraphics[width=\textwidth]{"The gentlemen_FITS_outputs/raw_frames/raw_frame_19.png"}
+        \caption{Frame 19}
+    \end{subfigure}
+    \caption{Representative sample of raw FITS observation frames showing background static, fixed stars, and noise floor.}
+    \label{fig:raw_frames}
+\end{figure}
+
+\section{Median Reference and Difference Images}
+
+\subsection{Building the Reference}
+
+The background level changes slightly between frames. We first measured the typical sky level in each image and corrected these small differences.
+
+A median reference image was then constructed from the aligned frames. Taking the median preserves sources that remain fixed, such as stars, while rejecting sources that move between frames.
+
+In the final version, pixels around the preliminary object trajectory and confirmed sharp artefacts were excluded before the reference was calculated. This prevents a faint copy of the moving object from being included in the reference.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.65\textwidth]{"median_reference.png"}
+    \caption{Constructed median reference image representing the stationary background stars and background sky flux.}
+    \label{fig:median_ref}
+\end{figure}
+
+\subsection{Difference Images}
+
+Each corrected frame was subtracted from the median reference:
+\begin{equation}
+    D_i(x, y) = I_i(x, y) - R(x, y)
+\end{equation}
+Fixed stars largely disappear because they are present in both images. A moving source remains as a positive point-like feature because it is present at a different position in each frame.
+
+The green circles in the difference outputs mark the recovered object position. Its steady movement from left to right is much clearer in the difference images than in the original frames.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.23\textwidth}
+        \includegraphics[width=\textwidth]{"The gentlemen_FITS_outputs/difference_images/diff_frame_00.png"}
+        \caption{Diff 00}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.23\textwidth}
+        \includegraphics[width=\textwidth]{"The gentlemen_FITS_outputs/difference_images/diff_frame_06.png"}
+        \caption{Diff 06}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.23\textwidth}
+        \includegraphics[width=\textwidth]{"The gentlemen_FITS_outputs/difference_images/diff_frame_12.png"}
+        \caption{Diff 12}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.23\textwidth}
+        \includegraphics[width=\textwidth]{"The gentlemen_FITS_outputs/difference_images/diff_frame_19.png"}
+        \caption{Diff 19}
+    \end{subfigure}
+    \caption{Representative difference images isolating the moving transient candidate after reference subtraction.}
+    \label{fig:diff_frames}
+\end{figure}
+
+\section{Candidate Detection and Source Identification}
+
+The noise level was measured directly from each difference image. Candidate sources were required to be clearly brighter than the surrounding noise and to cover more than one connected pixel.
+
+This rejected most random noise fluctuations. Very sharp one-pixel events were treated separately because they are more consistent with cosmic rays or hot pixels than with an astronomical point source.
+
+The final moving source was distinguished from other candidates because it:
+\begin{itemize}[noitemsep]
+    \item was detected consistently across all 20 frames;
+    \item followed a smooth path;
+    \item had the same point-like shape as the stars;
+    \item remained strong enough to detect in every frame;
+    \item did not behave like a random isolated pixel;
+    \item appeared only when the frames were combined using the correct direction and timing of motion.
+\end{itemize}
+
+The earlier method flagged 28 possible sharp artefacts, but 7 of these were actually bright pixels belonging to the moving object. The improved method identified only \textbf{3 sharp artefacts}, with \textbf{none located on the object}.
+
+The residual panels show what remains after subtracting the fitted object model. They contain mostly ordinary noise and no strong source-shaped pattern, indicating that the measured positions and source shape are reasonable.
+
+\section{Reconstructed Trajectory}
+
+The object's position was measured by fitting a circular point-source model to a small region around it in each frame. The model accounts for the fact that each detector pixel records light over a finite area.
+
+The resulting path is gently curved. We compared straight-line, quadratic, and cubic descriptions of the motion:
+
+\begin{table}[htbp]
+\centering
+\caption{Comparison of Candidate Trajectory Motion Models}
+\label{tab:motion_models}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Motion Model} & \textbf{2D RMS Error} & \textbf{BIC} & \textbf{Interpretation} \\
+\midrule
+Linear    & 0.736 px          & 597.6         & Does not describe the curvature \\
+Quadratic & \textbf{0.213 px} & \textbf{66.0} & Best balance of fit and simplicity \\
+Cubic     & 0.205 px          & 69.3          & Slightly lower RMS, but unnecessary complexity \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The quadratic model was selected because it is strongly superior to the straight-line model, while the cubic model does not provide a statistically meaningful improvement according to the Bayesian Information Criterion (BIC).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{"The gentlemen_trajectory.png"}
+    \caption{Reconstructed 2D trajectory of the faint moving source with quadratic fit and individual frame detections.}
+    \label{fig:trajectory}
+\end{figure}
+
+\subsection{Measured Motion Parameters}
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Starting position:} approximately $(39.80, 44.67)$ px
+    \item \textbf{Ending position:} approximately $(65.53, 53.86)$ px
+    \item \textbf{Mean apparent speed:} approximately $1.46$ px per frame
+    \item \textbf{Mid-sequence horizontal velocity:} $1.357 \pm 0.007$ px per frame
+    \item \textbf{Mid-sequence vertical velocity:} $0.477 \pm 0.007$ px per frame
+\end{itemize}
+
+The horizontal acceleration is consistent with zero, whereas the vertical acceleration is clearly detected:
+\begin{itemize}[noitemsep]
+    \item \textbf{Horizontal acceleration:} $-0.0013 \pm 0.0026$ px per $\text{frame}^2$
+    \item \textbf{Vertical acceleration:} $+0.0470 \pm 0.0028$ px per $\text{frame}^2$
+\end{itemize}
+
+This accounts for why the object follows a gently curved path rather than a purely rectilinear trajectory.
+
+\subsection{Possible Object Classification}
+
+The source is point-like and moves smoothly against the fixed background stars. This behaviour is consistent with a nearby moving Solar System body, such as an asteroid, comet, or artificial satellite.
+
+The provided dataset lacks observation timestamps, pixel scale, telescope optics parameters, and astrometric World Coordinate System (WCS) calibration. Consequently, pixel speeds cannot be mapped to physical or angular orbital mechanics, and we avoid assigning an absolute physical classification based on image-plane coordinates alone.
+
+\section{Noise Level and Signal Strength}
+
+The average noise level measured across the difference images is:
+\begin{equation}
+    \sigma_{\text{noise}} = 2.80 \pm 0.02 \text{ ADU per pixel}
+\end{equation}
+
+The recovered moving source exhibits:
+\begin{itemize}[noitemsep]
+    \item \textbf{Mean fitted flux:} approximately $124.9$ ADU;
+    \item \textbf{Matched-filter SNR range:} $8.7$ to $13.2$ per frame;
+    \item \textbf{Mean matched-filter SNR:} $11.0$;
+    \item \textbf{Mean peak-pixel SNR:} approximately $5.6$.
+\end{itemize}
+
+An SNR of $\approx 11.0$ confirms that the full point-source profile is substantially brighter than the surrounding Gaussian noise floor. The peak-pixel SNR is lower because the source flux is spread over the detector's point-spread function (PSF).
+
+\section{Reliability Tests}
+
+\subsection{Injection and Recovery Analysis}
+
+Artificial synthetic point sources matching the measured flux of the detected object were injected into empty regions of the real difference images. The identical detection and fitting pipeline was executed:
+\begin{itemize}[noitemsep]
+    \item \textbf{$X$-position scatter:} $0.141$ px
+    \item \textbf{$Y$-position scatter:} $0.149$ px
+    \item \textbf{Combined 2D positional uncertainty:} approximately $0.206$ px
+\end{itemize}
+
+The empirical trajectory 2D RMS error of \textbf{0.213 px} matches this independently quantified floor of $0.206$ px very closely, proving that trajectory scatter is dominated by image photon noise rather than model misspecification. The injection bias was less than $0.01$ px in both axes.
+
+\begin{table}[htbp]
+\centering
+\caption{Injection Recovery Rate as a Function of Source SNR}
+\label{tab:injection_recovery}
+\begin{tabular}{rr}
+\toprule
+\textbf{Injected SNR} & \textbf{Recovery Rate} \\
+\midrule
+3           & 7\%   \\
+4           & 28\%  \\
+5           & 54\%  \\
+6           & 85\%  \\
+7           & 97\%  \\
+$\ge 8$     & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Because the real object's per-frame SNR spans $8.7$ to $13.2$, it consistently resides in the $100\%$ recovery regime.
+
+\subsection{Negative-Image False Alarm Test}
+
+The candidate detection pipeline was executed on inverted difference images (where real sources become negative flux troughs). Real noise peaks will trigger symmetrically:
+\begin{itemize}[noitemsep]
+    \item The negative images produced an average of only \textbf{0.10 false detections per frame}.
+    \item When combined with the multi-frame kinematic linking constraint across all 20 frames, the joint probability of a spurious noise track is virtually zero ($p \ll 10^{-6}$).
+\end{itemize}
+
+\subsection{Shift-and-Stack Significance Test}
+
+Images were co-added along the reconstructed trajectory vectors:
+\begin{itemize}[noitemsep]
+    \item \textbf{Real time-ordered trajectory:} stacked detection significance of \textbf{35.7}$\boldsymbol{\sigma}$;
+    \item \textbf{Strongest tested noise-only trajectory:} $2.6\sigma$;
+    \item \textbf{Reversed-time trajectory:} consistent with pure background static ($-0.6\sigma$).
+\end{itemize}
+
+This decisively demonstrates that the moving signal is an authentic physical transient aligned with the inferred trajectory.
+
+\section{Improvement Over the Initial Analysis}
+
+The refined extraction pipeline was benchmarked directly against the preliminary baseline pipeline on the identical raw dataset:
+
+\begin{table}[htbp]
+\centering
+\caption{Performance Benchmarking: Initial vs. Refined Detection Pipeline}
+\label{tab:pipeline_comparison}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Metric} & \textbf{Initial Result} & \textbf{Final Result} & \textbf{Improvement} \\
+\midrule
+2D Trajectory RMS               & 0.242 px  & \textbf{0.213 px}  & \textbf{12.0\% lower} \\
+Leave-One-Out Cross-Validation  & 0.285 px  & \textbf{0.253 px}  & \textbf{11.2\% lower} \\
+Median Positional Uncertainty   & 0.155 px  & \textbf{0.138 px}  & \textbf{11.0\% lower} \\
+$R^2$ for $X$-fit               & 0.99970   & 0.99969            & Negligible ($\Delta < 10^{-5}$) \\
+$R^2$ for $Y$-fit               & 0.99510   & \textbf{0.99676}   & \textbf{Improved} \\
+Mean Matched-Filter SNR         & 10.30     & \textbf{11.03}     & \textbf{7.1\% higher} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Limitations}
+
+The primary physical and instrumental limitations include:
+\begin{enumerate}[noitemsep]
+    \item A sample size of only 20 sequential exposures.
+    \item Localized noise elevation in intermediate frames where the object traverses near the wings of a bright stationary star.
+    \item Assumption of a circular, spatially static point-spread function across all frames.
+    \item Correlated noise between difference images due to a shared median reference frame.
+    \item Lack of observation epochs, exposure durations, pixel scales, telescope aperture, and WCS astrometric header data.
+    \item Inability to convert pixel velocities into physical orbital elements (semi-major axis, inclination, eccentricity).
+    \item Indeterminacy of the physical taxonomy (asteroid vs. satellite vs. comet) solely from pixel coordinates.
+\end{enumerate}
+
+\section{Conclusion}
+
+We successfully detected and tracked a faint moving transient source across 20 noisy astronomical FITS images.
+
+Median-reference background subtraction effectively removed static stellar contamination, noise-adaptive candidate thresholding isolated viable sources, and kinematic linking resolved the unique physical trajectory. The final quadratic trajectory achieves a \textbf{2D RMS precision of 0.213 pixels} (a $12.0\%$ improvement over the initial $0.242$ px baseline), closely matching the theoretical noise limit of \textbf{0.206 pixels} determined by synthetic injection experiments.
+
+With a per-frame matched-filter SNR of \textbf{11.0} and a shift-and-stack detection significance of \textbf{35.7}$\boldsymbol{\sigma}$, the recovered object and its acceleration are conclusively validated.
+
+\end{document}
