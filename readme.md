@@ -8,9 +8,9 @@
 
 Following the corruption of the AI supercomputer **EDEN**, humanity's emergency relocation initiative lost access to critical astronomical tracking pipelines, historical planetary archives, and the core settlement-viability prediction algorithm. Our team (**The gentlemen**) executed a three-stage recovery and reconstruction mission to restore these capabilities:
 
-1. **Part One — Signal in the Static (Astronomical Image Processing):** We analyzed a sequence of 20 noisy Flexible Image Transport System (FITS) astronomical frames to isolate a faint, uncatalogued moving body. Using sky-level normalization, masked median-reference image subtraction, and matched-filter point-spread function (PSF) modeling, we detected and tracked the object across all 20 frames. The object follows a gentle quadratic trajectory from $(39.80, 44.67)\text{ px}$ to $(65.53, 53.86)\text{ px}$ with a 2D root-mean-square (RMS) positional residual of $0.213\text{ px}$ (closely approaching the noise floor of $0.206\text{ px}$) and a shift-and-stack combined significance of $35.7\sigma$.
-2. **Part Two — Fragments of a Lost Archive (Data Restoration & Exploratory Analysis):** We audited and cleaned 6,400 corrupted planetary records from a nearby galaxy, resolving unit-scale anomalies, text-encoding fragmentation, and missing values via domain-informed chemical and physical constraints. Through visual and statistical analysis, we evaluated five core astrobiological research questions and conducted an independent investigation into surface hydrology, demonstrating that **hazard-free environments** (mean index = 83.9) and **global surface oceans** (mean index = 65.4, +14.9 points over dry worlds) are the strongest drivers of planetary habitability.
-3. **Bonus Task — Rebuilding EDEN (Predictive Machine Learning Architecture):** To reconstruct EDEN's decision engine (`viable` $\iff$ `settlement_index` $\ge 60$), we engineered 176 domain-specific astrophysics, atmospheric chemistry, and orbital mechanics features. We trained a 10-fold cross-validated, 12-model dual-objective stacking ensemble (combining CatBoost, LightGBM, XGBoost, HistGradientBoosting, ExtraTrees, and Neural MLPs across both regression and classification objectives). Our Level-2 meta-ensemble achieved an Out-of-Fold (OOF) **ROC-AUC of 0.94748**, **Accuracy of 88.84%**, and **F1-Score of 0.8643**, classifying 653 (40.81%) of the 1,600 unseen test worlds as viable for human settlement.
+1. **Part One - Signal in the Static (Astronomical Image Processing):** We analyzed a sequence of 20 noisy Flexible Image Transport System (FITS) astronomical frames to isolate a faint, uncatalogued moving body. Using sky-level normalization, masked median-reference image subtraction, and matched-filter point-spread function (PSF) modeling, we detected and tracked the object across all 20 frames. The object follows a gentle quadratic trajectory from $(39.80, 44.67)\text{ px}$ to $(65.53, 53.86)\text{ px}$ with a 2D root-mean-square (RMS) positional residual of $0.213\text{ px}$ (closely approaching the noise floor of $0.206\text{ px}$) and a shift-and-stack combined significance of $35.7\sigma$.
+2. **Part Two - Fragments of a Lost Archive (Data Restoration & Exploratory Analysis):** We audited and cleaned 6,400 corrupted planetary records from a nearby galaxy, resolving unit-scale anomalies, text-encoding fragmentation, and missing values via domain-informed chemical and physical constraints. Through visual and statistical analysis, we evaluated five core astrobiological research questions and conducted an independent investigation into surface hydrology, demonstrating that **hazard-free environments** (mean index = 83.9) and **global surface oceans** (mean index = 65.4, +14.9 points over dry worlds) are the strongest drivers of planetary habitability.
+3. **Bonus Task - Rebuilding EDEN (Predictive Machine Learning Architecture):** To reconstruct EDEN's decision engine (`viable` $\iff$ `settlement_index` $\ge 60$), we engineered 176 domain-specific astrophysics, atmospheric chemistry, and orbital mechanics features. We trained a 10-fold cross-validated, 12-model dual-objective stacking ensemble (combining CatBoost, LightGBM, XGBoost, HistGradientBoosting, ExtraTrees, and Neural MLPs across both regression and classification objectives). Our Level-2 meta-ensemble achieved an Out-of-Fold (OOF) **ROC-AUC of 0.94748**, **Accuracy of 88.84%**, and **F1-Score of 0.8643**, classifying 653 (40.81%) of the 1,600 unseen test worlds as viable for human settlement.
 
 ---
 
@@ -150,7 +150,7 @@ Atmospheric composition follows a non-linear physiological optimality curve rath
 - **Oxygen (O₂):** Worlds within the Earth-like breathable band of **20–25% O₂** achieve the highest average settlement score of **66.9**, compared to just **53.7** for anoxic worlds (0–1% O₂). Increasing oxygen above 25% yields diminishing returns and increased combustion risk without further boosting scores.
 - **Carbon Dioxide (CO₂):** High CO₂ concentrations (>70%) drop the average settlement index to **54.2**, reflecting runaway greenhouse heating and hypercapnic toxicity. Low-to-moderate CO₂ bands perform substantially better.
 - **Methane (CH₄):** Atmospheres dominated by methane (>50%) average **53.2**, whereas trace or low-methane worlds score significantly higher.
-- **Conclusion:** Habitability depends on a balanced gas mixture — specifically moderate O₂ paired with low asphyxiant/greenhouse gas loads (CO₂ and CH₄).
+- **Conclusion:** Habitability depends on a balanced gas mixture - specifically moderate O₂ paired with low asphyxiant/greenhouse gas loads (CO₂ and CH₄).
 
 #### Q3: How does stellar multiplicity relate to settlement potential?
 Grouping planetary systems by host star configuration reveals a consistent stability gradient:
@@ -272,20 +272,20 @@ We implemented a **10-Fold Stratified Cross-Validation** scheme (`RANDOM_SEED = 
 
 | Model Identifier | Algorithm Family & Objective | OOF RMSE | OOF $R^2$ | OOF Accuracy | OOF F1-Score | OOF ROC-AUC |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
-| `cat_reg` | CatBoost Regressor | **4.3530** | **0.8369** | 88.625% | — | 0.94739 |
-| `hgb_reg` | HistGradientBoosting Regressor | 4.4998 | 0.8257 | 87.812% | — | 0.94375 |
-| `lgb_reg` | LightGBM Regressor | 4.5238 | 0.8238 | 87.812% | — | 0.94277 |
-| `et_reg` | ExtraTrees Regressor | 4.8142 | 0.8005 | 86.500% | — | 0.93378 |
-| `xgb_reg` | XGBoost Regressor | 4.8892 | 0.7942 | 87.016% | — | 0.93676 |
-| `mlp_reg` | Neural MLP Regressor | 5.2004 | 0.7672 | 85.219% | — | 0.92637 |
-| `cat_cls` | CatBoost Classifier | — | — | 88.141% | 0.8551 | 0.94474 |
-| `xgb_cls` | XGBoost Classifier | — | — | 87.703% | 0.8501 | 0.94050 |
-| `lgb_cls` | LightGBM Classifier | — | — | 87.484% | 0.8466 | 0.93898 |
-| `hgb_cls` | HistGradientBoosting Classifier | — | — | 87.266% | 0.8447 | 0.93792 |
-| `et_cls` | ExtraTrees Classifier | — | — | 86.141% | 0.8287 | 0.92897 |
-| `mlp_cls` | Neural MLP Classifier | — | — | 86.047% | 0.8303 | 0.92845 |
-| **Meta-Regressor** | `RidgeCV` Stack (6 Regressors) | 4.3533 | 0.8368 | — | — | — |
-| **Meta-Classifier** | `LogisticRegressionCV` Stack | — | — | — | — | 0.94719 |
+| `cat_reg` | CatBoost Regressor | **4.3530** | **0.8369** | 88.625% | - | 0.94739 |
+| `hgb_reg` | HistGradientBoosting Regressor | 4.4998 | 0.8257 | 87.812% | - | 0.94375 |
+| `lgb_reg` | LightGBM Regressor | 4.5238 | 0.8238 | 87.812% | - | 0.94277 |
+| `et_reg` | ExtraTrees Regressor | 4.8142 | 0.8005 | 86.500% | - | 0.93378 |
+| `xgb_reg` | XGBoost Regressor | 4.8892 | 0.7942 | 87.016% | - | 0.93676 |
+| `mlp_reg` | Neural MLP Regressor | 5.2004 | 0.7672 | 85.219% | - | 0.92637 |
+| `cat_cls` | CatBoost Classifier | - | - | 88.141% | 0.8551 | 0.94474 |
+| `xgb_cls` | XGBoost Classifier | - | - | 87.703% | 0.8501 | 0.94050 |
+| `lgb_cls` | LightGBM Classifier | - | - | 87.484% | 0.8466 | 0.93898 |
+| `hgb_cls` | HistGradientBoosting Classifier | - | - | 87.266% | 0.8447 | 0.93792 |
+| `et_cls` | ExtraTrees Classifier | - | - | 86.141% | 0.8287 | 0.92897 |
+| `mlp_cls` | Neural MLP Classifier | - | - | 86.047% | 0.8303 | 0.92845 |
+| **Meta-Regressor** | `RidgeCV` Stack (6 Regressors) | 4.3533 | 0.8368 | - | - | - |
+| **Meta-Classifier** | `LogisticRegressionCV` Stack | - | - | - | - | 0.94719 |
 | **Final V2 Meta-Ensemble** | **Dual-Objective Calibrated Blend** | **4.3533** | **0.8368** | **88.8438%** | **0.8643** | **0.94748** |
 
 #### Key Observations from Model Evaluation
@@ -298,8 +298,8 @@ We implemented a **10-Fold Stratified Cross-Validation** scheme (`RANDOM_SEED = 
    | **Actual Non-Viable (0)** | **TN = 3,412** | **FP = 280** |
    | **Actual Viable (1)** | **FN = 434** | **TP = 2,274** |
 
-   - **Specificity (True Negative Rate):** 92.42% (3,412 / 3,692) — High protection against false-positive colonization of hostile worlds.
-   - **Precision (Positive Predictive Value):** 89.04% (2,274 / 2,554) — Nearly 9 out of 10 worlds recommended by our model are genuinely viable.
+   - **Specificity (True Negative Rate):** 92.42% (3,412 / 3,692) - High protection against false-positive colonization of hostile worlds.
+   - **Precision (Positive Predictive Value):** 89.04% (2,274 / 2,554) - Nearly 9 out of 10 worlds recommended by our model are genuinely viable.
    - **Sensitivity (Recall):** 83.97% (2,274 / 2,708).
 3. **Unseen Test Set Predictions (`The_gentlemen_predicted.csv`):**
    - Applied to the 1,600 unseen test planets, the ensemble predicted **653 viable worlds (40.81%)** and **947 non-viable worlds (59.19%)**, closely matching the true training prior of 42.31% and OOF positive rate of 39.91%.
