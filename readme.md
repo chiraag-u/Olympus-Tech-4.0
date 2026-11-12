@@ -34,7 +34,7 @@ Before going rogue, EDEN captured 20 sequential FITS images of a dense stellar f
   1. An initial median image was constructed to identify the preliminary path of the moving object and locate sharp 1-pixel cosmic-ray spikes.
   2. In the second pass, pixels along the preliminary trajectory and confirmed sharp artefacts were masked out before computing the temporal median pixel-by-pixel:
 
-$$I_{\text{ref}}(x, y) = \operatorname{median}_{t \notin \mathcal{M}(x,y)} \left( I_{\text{cal}}(x, y, t) \right)$$
+$$I_{\text{ref}}(x, y) = \mathrm{median}_{t \notin \mathcal{M}(x,y)} \left( I_{\text{cal}}(x, y, t) \right)$$
 
 - **Difference Image Generation:** Each calibrated frame was subtracted from the clean reference image:
 
@@ -98,7 +98,7 @@ Comparing our final two-pass masked reference and pixel-integrated PSF fitting p
 | **Leave-One-Out (LOO) CV RMS** | 0.285 px | **0.253 px** | **11.2% reduction** |
 | **Median Astrometric Uncertainty** | 0.155 px | **0.138 px** | **11.0% reduction** |
 | **Trajectory $R^2$ ($X$ / $Y$)** | 0.99970 / 0.99510 | **0.99969 / 0.99676** | **$Y$-axis fit substantially improved** |
-| **Mean Matched-Filter SNR** | 10.30 | **11.03** | **$+7.1\%$ SNR gain** |
+| **Mean Matched-Filter SNR** | 10.30 | **11.03** | **+7.1% SNR gain** |
 
 #### Physical Nature & Limitations
 The point-like PSF morphology and smooth, curved apparent motion against fixed stars are characteristic of a solar-system minor body (such as a main-belt asteroid, near-Earth object, or distant comet core) or an artificial satellite/spacecraft exhibiting parallax or orbital curvature. However, key limitations include: (1) the short 20-frame baseline, (2) localized photon noise elevation when the object passes near a bright background star, and (3) the absence of World Coordinate System (WCS) headers, exposure timestamps, and telescope plate scale ($\text{arcsec/pixel}$), which prevents converting pixel velocities into physical orbital elements.
