@@ -10,7 +10,7 @@ Following the corruption of the AI supercomputer **EDEN**, humanity's emergency 
 
 1. **Part One - Signal in the Static (Astronomical Image Processing):** We analyzed a sequence of 20 noisy Flexible Image Transport System (FITS) astronomical frames to isolate a faint, uncatalogued moving body. Using sky-level normalization, masked median-reference image subtraction, and matched-filter point-spread function (PSF) modeling, we detected and tracked the object across all 20 frames. The object follows a gentle quadratic trajectory from (39.80, 44.67) px to (65.53, 53.86) px with a 2D root-mean-square (RMS) positional residual of 0.213 px (closely approaching the noise floor of 0.206 px) and a shift-and-stack combined significance of 35.7σ.
 2. **Part Two - Fragments of a Lost Archive (Data Restoration & Exploratory Analysis):** We audited and cleaned 6,400 corrupted planetary records from a nearby galaxy, resolving unit-scale anomalies, text-encoding fragmentation, and missing values via domain-informed chemical and physical constraints. Through visual and statistical analysis, we evaluated five core astrobiological research questions and conducted an independent investigation into surface hydrology, demonstrating that **hazard-free environments** (mean index = 83.9) and **global surface oceans** (mean index = 65.4, +14.9 points over dry worlds) are the strongest drivers of planetary habitability.
-3. **Bonus Task - Rebuilding EDEN (Predictive Machine Learning Architecture):** To reconstruct EDEN's decision engine ($\text{viable} \iff \text{settlement\_index} \ge 60$), we engineered 176 domain-specific astrophysics, atmospheric chemistry, and orbital mechanics features. We trained a 10-fold cross-validated, 12-model dual-objective stacking ensemble (combining CatBoost, LightGBM, XGBoost, HistGradientBoosting, ExtraTrees, and Neural MLPs across both regression and classification objectives). Our Level-2 meta-ensemble achieved an Out-of-Fold (OOF) **ROC-AUC of 0.94748**, **Accuracy of 88.84%**, and **F1-Score of 0.8643**, classifying 653 (40.81%) of the 1,600 unseen test worlds as viable for human settlement.
+3. **Bonus Task - Rebuilding EDEN (Predictive Machine Learning Architecture):** To reconstruct EDEN's decision engine (`viable` ⟺ `settlement_index` ≥ 60), we engineered 176 domain-specific astrophysics, atmospheric chemistry, and orbital mechanics features. We trained a 10-fold cross-validated, 12-model dual-objective stacking ensemble (combining CatBoost, LightGBM, XGBoost, HistGradientBoosting, ExtraTrees, and Neural MLPs across both regression and classification objectives). Our Level-2 meta-ensemble achieved an Out-of-Fold (OOF) **ROC-AUC of 0.94748**, **Accuracy of 88.84%**, and **F1-Score of 0.8643**, classifying 653 (40.81%) of the 1,600 unseen test worlds as viable for human settlement.
 
 ---
 
@@ -33,9 +33,13 @@ Before going rogue, EDEN captured 20 sequential FITS images of a dense stellar f
 - **Masked Median Stacking:** A standard temporal median across aligned frames removes moving sources while preserving static stars. However, in a short 20-frame sequence, a slow-moving source can leave a faint positive bias ("ghost trail") in the median stack, which subsequently degrades SNR during subtraction. To prevent this, we implemented a **two-pass masked median reference**:
   1. An initial median image was constructed to identify the preliminary path of the moving object and locate sharp 1-pixel cosmic-ray spikes.
   2. In the second pass, pixels along the preliminary trajectory and confirmed sharp artefacts were masked out before computing the temporal median pixel-by-pixel:
-     $$I_{\text{ref}}(x, y) = \operatorname{median}_{t \notin \mathcal{M}(x,y)} \left( I_{\text{cal}}(x, y, t) \right)$$
+
+$$I_{\text{ref}}(x, y) = \operatorname{median}_{t \notin \mathcal{M}(x,y)} \left( I_{\text{cal}}(x, y, t) \right)$$
+
 - **Difference Image Generation:** Each calibrated frame was subtracted from the clean reference image:
-  $$D(x, y, t) = I_{\text{cal}}(x, y, t) - I_{\text{ref}}(x, y)$$
+
+$$D(x, y, t) = I_{\text{cal}}(x, y, t) - I_{\text{ref}}(x, y)$$
+
   Static background stars cancel out to zero mean (leaving only localized photon shot-noise residuals), whereas the moving source emerges clearly as a localized positive point-spread function (PSF) shifting position across frames.
 
 #### Step 3: Noise Estimation, Matched-Filter Detection, and Artefact Rejection
@@ -45,6 +49,7 @@ Before going rogue, EDEN captured 20 sequential FITS images of a dense stellar f
 
 #### Step 4: Kinematic Trajectory Modeling
 We evaluated three polynomial motion models  Linear (constant velocity), Quadratic (constant acceleration), and Cubic (jerk)  across the 20 frames ($t \in \{0, 1, \dots, 19\}$) using the Bayesian Information Criterion ($BIC$) and 2D RMS positional error:
+
 $$x(t) = x_0 + v_x t + \frac{1}{2} a_x t^2, \qquad y(t) = y_0 + v_y t + \frac{1}{2} a_y t^2$$
 
 ---
@@ -208,7 +213,7 @@ Stratifying the cleaned archive across hydrological categories revealed one of t
 ### 3.1 Problem Formulation & Target Structure
 To rebuild EDEN's lost decision engine, we trained a predictive machine learning pipeline on the 6,400 labeled planets to classify the 1,600 unseen test worlds into binary settlement viability (`viable_planet`):
 
-$$\text{viable\_planet} = \mathbb{I}(\text{settlement\_index} \ge 60.0)$$
+$$\text{viable} = \mathbb{I}(\text{settlement index} \ge 60.0)$$
 
 In the training archive, **2,708 planets (42.31%)** are viable (`True` / 1) and **3,692 planets (57.69%)** are non-viable (`False` / 0).
 
@@ -224,14 +229,18 @@ We engineered **176 features** spanning eight scientific and statistical domains
 
 1. **Astrophysical & Planetary Interior Proxies:**
    - Using normalized escape velocity $\hat{v}_e = v_e / 11.186\text{ km/s}$ and surface gravity $g$ (in Earth $g$), we derived dimensionless planetary radius and mass proxies from Newtonian gravitation ($v_e = \sqrt{2GM/R}$ and $g = GM/R^2$):
-     $$R_{\text{proxy}} = \frac{\hat{v}_e^2}{g}, \qquad M_{\text{proxy}} = \frac{\hat{v}_e^4}{g}, \qquad \text{Ratio}_{v_e/g} = \frac{v_e}{g}$$
+
+$$R_{\text{proxy}} = \frac{\hat{v}_e^2}{g}, \qquad M_{\text{proxy}} = \frac{\hat{v}_e^4}{g}, \qquad \text{Ratio}_{v_e/g} = \frac{v_e}{g}$$
+
 2. **Orbital Mechanics & Keplerian Consistency:**
    - Using orbital semi-major axis $a$ ($\text{AU}$) and unified orbital period $P_{\text{yr}}$ ($\text{years}$), we derived a host-star mass proxy via Kepler's Third Law ($M_\star \approx a^3 / P_{\text{yr}}^2$), expected Keplerian period $P_{\text{Kepler}} = 365.25 \cdot a^{1.5}$, and effective stellar insolation flux:
-     $$S_{\text{eff}} = \frac{1 - \text{Albedo}}{a^2 + 0.05}$$
+
+$$S_{\text{eff}} = \frac{1 - \text{Albedo}}{a^2 + 0.05}$$
+
 3. **Atmospheric Partial Pressures & Physiological Ratios:**
    - By Dalton's Law, physiological gas toxicity and breathability depend on **partial pressure** ($P_i = P_{\text{atm}} \times f_i$) rather than volume percentage alone. We computed partial pressures P(O₂), P(CO₂), P(CH₄), and P(N₂) (in atm), total toxic gas sum (CO₂ + CH₄ + SO₂ + H₂S + NH₃ + CO), total inert buffer sum (N₂ + Ar + He + Ne), and a composite breathability ratio:
 
-     $$\text{Breathability Ratio} = \frac{\text{O}_2 \%}{\sum \text{Toxic Gas} \% + 1.0}$$
+$$\text{Breathability Ratio} = \frac{\text{O}_2 \%}{\sum \text{Toxic Gas} \% + 1.0}$$
 
 4. **Earth-Similarity Deviations & Habitability Window Flags:**
    - Absolute deviations from Earth baselines: |Temp - 15°C|, |g - 1.0|, |Patm - 1.0|, |%O₂ - 21.0%|, estimated diurnal temperature range ($T_{\text{mean}} \pm 0.5\Delta T$), and boolean indicators for liquid-water thermal bands (-10°C to 45°C), comfortable gravity (0.5–1.3g), comfortable pressure (0.4–2.2 atm), and breathable oxygen (12–26%).
@@ -260,9 +269,12 @@ We implemented a **10-Fold Stratified Cross-Validation** scheme (`RANDOM_SEED = 
 #### Level-2 Meta-Ensembling & Calibration
 - **Meta-Regressor (`RidgeCV`):** Combines out-of-fold predictions from the 6 base regressors using L2-regularized linear stacking ($\alpha \in [10^{-1}, 10^4]$).
 - **Meta-Classifier (`LogisticRegressionCV`):** Stacks the 6 base classifier probabilities alongside sigmoid-calibrated probabilities from the 6 base regressors:
-  $$p_{\text{reg}, k} = \sigma\!\left(\frac{\hat{y}_{\text{reg}, k} - 60.0}{2.2}\right), \quad \text{where } \sigma(z) = \frac{1}{1 + e^{-z}}$$
-- **Optimal Dual-Branch Blending:** Finally, the Meta-Regressor prediction $\hat{y}_{\text{meta, reg}}$ and Meta-Classifier probability $p_{\text{meta, cls}}$ are combined via a prior-regularized grid search over blend weight $\alpha$, temperature scale $s$, and classification threshold $\tau$:
-  $$P(\text{viable}) = \alpha \cdot \sigma\!\left(\frac{\hat{y}_{\text{meta, reg}} - 60.0}{s}\right) + (1 - \alpha) \cdot p_{\text{meta, cls}}$$
+
+$$p_{\text{reg}, k} = \sigma\!\left(\frac{\hat{y}_{\text{reg}, k} - 60.0}{2.2}\right), \quad \text{where } \sigma(z) = \frac{1}{1 + e^{-z}}$$
+
+- **Optimal Dual-Branch Blending:** Finally, the meta-regressor prediction $\hat{y}_{\text{reg}}$ and meta-classifier probability $p_{\text{cls}}$ are combined via a prior-regularized grid search over blend weight $\alpha$, temperature scale $s$, and classification threshold $\tau$:
+
+$$P(\text{viable}) = \alpha \cdot \sigma\!\left(\frac{\hat{y}_{\text{reg}} - 60.0}{s}\right) + (1 - \alpha) \cdot p_{\text{cls}}$$
 
 ---
 
