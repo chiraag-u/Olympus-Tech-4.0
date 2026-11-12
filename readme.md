@@ -8,9 +8,9 @@
 
 Following the corruption of the AI supercomputer **EDEN**, humanity's emergency relocation initiative lost access to critical astronomical tracking pipelines, historical planetary archives, and the core settlement-viability prediction algorithm. Our team (**The gentlemen**) executed a three-stage recovery and reconstruction mission to restore these capabilities:
 
-1. **Part One - Signal in the Static (Astronomical Image Processing):** We analyzed a sequence of 20 noisy Flexible Image Transport System (FITS) astronomical frames to isolate a faint, uncatalogued moving body. Using sky-level normalization, masked median-reference image subtraction, and matched-filter point-spread function (PSF) modeling, we detected and tracked the object across all 20 frames. The object follows a gentle quadratic trajectory from $(39.80, 44.67)\text{ px}$ to $(65.53, 53.86)\text{ px}$ with a 2D root-mean-square (RMS) positional residual of $0.213\text{ px}$ (closely approaching the noise floor of $0.206\text{ px}$) and a shift-and-stack combined significance of $35.7\sigma$.
+1. **Part One - Signal in the Static (Astronomical Image Processing):** We analyzed a sequence of 20 noisy Flexible Image Transport System (FITS) astronomical frames to isolate a faint, uncatalogued moving body. Using sky-level normalization, masked median-reference image subtraction, and matched-filter point-spread function (PSF) modeling, we detected and tracked the object across all 20 frames. The object follows a gentle quadratic trajectory from (39.80, 44.67) px to (65.53, 53.86) px with a 2D root-mean-square (RMS) positional residual of 0.213 px (closely approaching the noise floor of 0.206 px) and a shift-and-stack combined significance of 35.7σ.
 2. **Part Two - Fragments of a Lost Archive (Data Restoration & Exploratory Analysis):** We audited and cleaned 6,400 corrupted planetary records from a nearby galaxy, resolving unit-scale anomalies, text-encoding fragmentation, and missing values via domain-informed chemical and physical constraints. Through visual and statistical analysis, we evaluated five core astrobiological research questions and conducted an independent investigation into surface hydrology, demonstrating that **hazard-free environments** (mean index = 83.9) and **global surface oceans** (mean index = 65.4, +14.9 points over dry worlds) are the strongest drivers of planetary habitability.
-3. **Bonus Task - Rebuilding EDEN (Predictive Machine Learning Architecture):** To reconstruct EDEN's decision engine (`viable` $\iff$ `settlement_index` $\ge 60$), we engineered 176 domain-specific astrophysics, atmospheric chemistry, and orbital mechanics features. We trained a 10-fold cross-validated, 12-model dual-objective stacking ensemble (combining CatBoost, LightGBM, XGBoost, HistGradientBoosting, ExtraTrees, and Neural MLPs across both regression and classification objectives). Our Level-2 meta-ensemble achieved an Out-of-Fold (OOF) **ROC-AUC of 0.94748**, **Accuracy of 88.84%**, and **F1-Score of 0.8643**, classifying 653 (40.81%) of the 1,600 unseen test worlds as viable for human settlement.
+3. **Bonus Task - Rebuilding EDEN (Predictive Machine Learning Architecture):** To reconstruct EDEN's decision engine ($\text{viable} \iff \text{settlement\_index} \ge 60$), we engineered 176 domain-specific astrophysics, atmospheric chemistry, and orbital mechanics features. We trained a 10-fold cross-validated, 12-model dual-objective stacking ensemble (combining CatBoost, LightGBM, XGBoost, HistGradientBoosting, ExtraTrees, and Neural MLPs across both regression and classification objectives). Our Level-2 meta-ensemble achieved an Out-of-Fold (OOF) **ROC-AUC of 0.94748**, **Accuracy of 88.84%**, and **F1-Score of 0.8643**, classifying 653 (40.81%) of the 1,600 unseen test worlds as viable for human settlement.
 
 ---
 
@@ -26,7 +26,7 @@ Before going rogue, EDEN captured 20 sequential FITS images of a dense stellar f
 #### Step 1: FITS Extraction, Calibration, and Raw Visualization
 - All 20 FITS frames were extracted, naturally sorted in chronological frame order, and cast into 64-bit floating-point arrays.
 - Missing or corrupted pixel values (`NaN`/`Inf`), where present, were imputed using the spatial median of the corresponding frame.
-- Each frame was plotted with calibrated $(x, y)$ pixel axes, a uniform grayscale intensity stretch, and a labeled colorbar reporting flux in Analog-to-Digital Units ($\text{ADU}$). Because the target's flux is comparable to local sky background fluctuations, it cannot be reliably tracked by visual inspection of raw frames alone.
+- Each frame was plotted with calibrated $(x, y)$ pixel axes, a uniform grayscale intensity stretch, and a labeled colorbar reporting flux in Analog-to-Digital Units ($ADU$). Because the target's flux is comparable to local sky background fluctuations, it cannot be reliably tracked by visual inspection of raw frames alone.
 
 #### Step 2: Two-Pass Masked Median Reference Construction & Difference Imaging
 - **Background Harmonization:** Small frame-to-frame sky background offsets were measured via robust sigma-clipped statistics and subtracted prior to stacking.
@@ -39,12 +39,12 @@ Before going rogue, EDEN captured 20 sequential FITS images of a dense stellar f
   Static background stars cancel out to zero mean (leaving only localized photon shot-noise residuals), whereas the moving source emerges clearly as a localized positive point-spread function (PSF) shifting position across frames.
 
 #### Step 3: Noise Estimation, Matched-Filter Detection, and Artefact Rejection
-- **Robust Noise Floor Estimation:** For each difference frame, background noise $\sigma_{\text{bg}}$ was estimated using the Median Absolute Deviation ($\text{MAD}$) scaled to an equivalent Gaussian standard deviation ($\sigma \approx 1.4826 \times \text{MAD}$), preventing bright residuals or the target itself from inflating the noise metric.
+- **Robust Noise Floor Estimation:** For each difference frame, background noise $\sigma_{\text{bg}}$ was estimated using the Median Absolute Deviation ($MAD$) scaled to an equivalent Gaussian standard deviation ($\sigma \approx 1.4826 \times MAD$), preventing bright residuals or the target itself from inflating the noise metric.
 - **Spatial Morphology & Cosmic-Ray Filtering:** Candidate detections were required to exceed a noise-based threshold and span multiple connected pixels consistent with the optical PSF width. Sharp single-pixel spikes were isolated using a sharpness/Laplacian ratio criterion. While an initial unrefined pass flagged 28 sharp candidates (7 of which overlapped the true object's core), our refined spatial-frequency discriminator isolated exactly **3 true single-pixel cosmic-ray/hot-pixel artefacts**, with **0 false flags on the target**.
 - **Sub-Pixel Astrometric Centroiding:** In each frame, the object's exact $(x_t, y_t)$ coordinates and integrated flux were measured by fitting a 2D circular Gaussian PSF integrated over finite pixel areas.
 
 #### Step 4: Kinematic Trajectory Modeling
-We evaluated three polynomial motion models  Linear (constant velocity), Quadratic (constant acceleration), and Cubic (jerk)  across the 20 frames ($t \in \{0, 1, \dots, 19\}$) using the Bayesian Information Criterion ($\text{BIC}$) and 2D RMS positional error:
+We evaluated three polynomial motion models  Linear (constant velocity), Quadratic (constant acceleration), and Cubic (jerk)  across the 20 frames ($t \in \{0, 1, \dots, 19\}$) using the Bayesian Information Criterion ($BIC$) and 2D RMS positional error:
 $$x(t) = x_0 + v_x t + \frac{1}{2} a_x t^2, \qquad y(t) = y_0 + v_y t + \frac{1}{2} a_y t^2$$
 
 ---
@@ -54,15 +54,15 @@ $$x(t) = x_0 + v_x t + \frac{1}{2} a_x t^2, \qquad y(t) = y_0 + v_y t + \frac{1}
 #### Kinematic Model Selection & Trajectory Parameters
 The quadratic motion model provided the optimal balance between physical explanatory power and parsimony, reducing the 2D RMS error by **71%** compared to a straight-line fit:
 
-| Motion Model | 2D RMS Error ($\text{px}$) | Bayesian Information Criterion ($\text{BIC}$) | Physical & Statistical Interpretation |
+| Motion Model | 2D RMS Error ($px$) | Bayesian Information Criterion ($BIC$) | Physical & Statistical Interpretation |
 | :--- | :---: | :---: | :--- |
-| **Linear** | $0.736\text{ px}$ | $597.6$ | Underfits; fails to capture vertical curvature |
-| **Quadratic (Selected)** | **$0.213\text{ px}$** | **$66.0$** | **Optimal balance of goodness-of-fit and model simplicity** |
-| **Cubic** | $0.205\text{ px}$ | $69.3$ | Over-parameterized; marginal RMS drop penalized by $\text{BIC}$ |
+| **Linear** | 0.736 px | 597.6 | Underfits; fails to capture vertical curvature |
+| **Quadratic (Selected)** | **0.213 px** | **66.0** | **Optimal balance of goodness-of-fit and model simplicity** |
+| **Cubic** | 0.205 px | 69.3 | Over-parameterized; marginal RMS drop penalized by $BIC$ |
 
 - **Start Coordinates (Frame 1):** $(39.80, 44.67)\text{ px}$
 - **End Coordinates (Frame 20):** $(65.53, 53.86)\text{ px}$
-- **Mean Apparent Speed:** $1.46\text{ px/frame}$
+- **Mean Apparent Speed:** 1.46 px/frame
 - **Mid-Sequence Velocity Vector:** $v_x = 1.357 \pm 0.007\text{ px/frame}$, $v_y = 0.477 \pm 0.007\text{ px/frame}$
 - **Measured Acceleration Vector:**
   - Horizontal acceleration: $a_x = -0.0013 \pm 0.0026\text{ px/frame}^2$ (statistically consistent with zero)
@@ -70,30 +70,30 @@ The quadratic motion model provided the optimal balance between physical explana
 
 #### Signal-to-Noise Ratio (SNR) & Photometry
 - **Difference Image Background Noise:** $\sigma_{\text{bg}} = 2.80 \pm 0.02\text{ ADU/pixel}$
-- **Mean Integrated Source Flux:** $124.9\text{ ADU}$
-- **Peak-Pixel SNR:** Mean of $5.6$ per frame (light is distributed across the PSF footprint)
-- **Matched-Filter SNR:** Ranges from **$8.7$ to $13.2$** across individual frames, with a **mean matched-filter SNR of $11.03$**.
+- **Mean Integrated Source Flux:** 124.9 ADU
+- **Peak-Pixel SNR:** Mean of 5.6 per frame (light is distributed across the PSF footprint)
+- **Matched-Filter SNR:** Ranges from **8.7 to 13.2** across individual frames, with a **mean matched-filter SNR of 11.03**.
 
 #### Statistical Validation & Reliability Verification
 To prove that the recovered track could not arise from sensor noise or subtraction residuals, we executed three independent validation experiments:
 
 1. **Synthetic Source Injection & Recovery Monte Carlo:**
-   Artificial PSF sources matching the target's flux profile were injected into source-free regions of the difference frames. Recovery experiments yielded a 1D scatter of $\sigma_x = 0.141\text{ px}$ and $\sigma_y = 0.149\text{ px}$, corresponding to a theoretical **2D noise-limited astrometric floor of $0.206\text{ px}$** (with $<0.01\text{ px}$ systematic bias). Our observed trajectory RMS of **$0.213\text{ px}$** matches this theoretical limit to within $0.007\text{ px}$, proving that residual scatter is pure background photon noise. Furthermore, completeness testing showed a $7\%$ recovery rate at $\text{SNR}=3$, $54\%$ at $\text{SNR}=5$, $97\%$ at $\text{SNR}=7$, and **$100\%$ recovery for $\text{SNR} \ge 8$**  placing our target ($\text{SNR} \in [8.7, 13.2]$) firmly in the $100\%$ completeness regime.
+   Artificial PSF sources matching the target's flux profile were injected into source-free regions of the difference frames. Recovery experiments yielded a 1D scatter of $\sigma_x = 0.141\text{ px}$ and $\sigma_y = 0.149\text{ px}$, corresponding to a theoretical **2D noise-limited astrometric floor of 0.206 px** (with <0.01 px systematic bias). Our observed trajectory RMS of **0.213 px** matches this theoretical limit to within 0.007 px, proving that residual scatter is pure background photon noise. Furthermore, completeness testing showed a 7% recovery rate at $\text{SNR}=3$, 54% at $\text{SNR}=5$, 97% at $\text{SNR}=7$, and **100% recovery for $\text{SNR} \ge 8$**  placing our target ($\text{SNR} \in [8.7, 13.2]$) firmly in the 100% completeness regime.
 2. **Negative-Image False-Alarm Test:**
-   Running the identical detection pipeline on inverted difference frames ($-D(x,y,t)$) yielded an average of only **$0.10$ false positive candidates per frame**, none of which formed a kinematically linkable multi-frame trajectory.
+   Running the identical detection pipeline on inverted difference frames ($-D(x,y,t)$) yielded an average of only **0.10 false positive candidates per frame**, none of which formed a kinematically linkable multi-frame trajectory.
 3. **Shift-and-Stack Co-Addition Test:**
-   Shifting all 20 difference frames along the recovered quadratic trajectory and stacking them produced a coherent point source at an empirical significance of **$35.7\sigma$**. By contrast, stacking along random noise trajectories peaked at **$2.6\sigma$**, and stacking along the exact same spatial coordinates in **reverse chronological order** yielded **$-0.6\sigma$** (pure noise).
+   Shifting all 20 difference frames along the recovered quadratic trajectory and stacking them produced a coherent point source at an empirical significance of **35.7σ**. By contrast, stacking along random noise trajectories peaked at **2.6σ**, and stacking along the exact same spatial coordinates in **reverse chronological order** yielded **-0.6σ** (pure noise).
 
 #### Pipeline Refinement Summary
 Comparing our final two-pass masked reference and pixel-integrated PSF fitting pipeline against our initial baseline analysis demonstrated consistent gains across all metrics:
 
 | Diagnostic Metric | Initial Baseline Pipeline | Final Refined Pipeline | Relative Improvement |
 | :--- | :---: | :---: | :---: |
-| **2D Trajectory RMS Error** | $0.242\text{ px}$ | **$0.213\text{ px}$** | **$12.0\%$ reduction** |
-| **Leave-One-Out (LOO) CV RMS** | $0.285\text{ px}$ | **$0.253\text{ px}$** | **$11.2\%$ reduction** |
-| **Median Astrometric Uncertainty** | $0.155\text{ px}$ | **$0.138\text{ px}$** | **$11.0\%$ reduction** |
-| **Trajectory $R^2$ ($X$ / $Y$)** | $0.99970$ / $0.99510$ | **$0.99969$ / $0.99676$** | **$Y$-axis fit substantially improved** |
-| **Mean Matched-Filter SNR** | $10.30$ | **$11.03$** | **$+7.1\%$ SNR gain** |
+| **2D Trajectory RMS Error** | 0.242 px | **0.213 px** | **12.0% reduction** |
+| **Leave-One-Out (LOO) CV RMS** | 0.285 px | **0.253 px** | **11.2% reduction** |
+| **Median Astrometric Uncertainty** | 0.155 px | **0.138 px** | **11.0% reduction** |
+| **Trajectory $R^2$ ($X$ / $Y$)** | 0.99970 / 0.99510 | **0.99969 / 0.99676** | **$Y$-axis fit substantially improved** |
+| **Mean Matched-Filter SNR** | 10.30 | **11.03** | **$+7.1\%$ SNR gain** |
 
 #### Physical Nature & Limitations
 The point-like PSF morphology and smooth, curved apparent motion against fixed stars are characteristic of a solar-system minor body (such as a main-belt asteroid, near-Earth object, or distant comet core) or an artificial satellite/spacecraft exhibiting parallax or orbital curvature. However, key limitations include: (1) the short 20-frame baseline, (2) localized photon noise elevation when the object passes near a bright background star, and (3) the absence of World Coordinate System (WCS) headers, exposure timestamps, and telescope plate scale ($\text{arcsec/pixel}$), which prevents converting pixel velocities into physical orbital elements.
@@ -103,7 +103,7 @@ The point-like PSF morphology and smooth, curved apparent motion against fixed s
 ## Part Two: Fragments of a Lost Archive
 
 ### 2.1 Problem Context & Objective
-EDEN's planetary archive contained $6,400$ labeled training records and $1,600$ unlabeled test records detailing physical, orbital, atmospheric, and ecological parameters alongside EDEN's continuous `settlement_index` ($0\text{ to }100$). Because EDEN corrupted the database before going offline, the raw records suffered from severe unit-scale inconsistencies, typographical fragmentation, missing fields, and multi-label string concatenations. Our mission was to restore the dataset to analytical integrity, answer five fundamental habitability research questions, and formulate an independent scientific investigation.
+EDEN's planetary archive contained 6,400 labeled training records and 1,600 unlabeled test records detailing physical, orbital, atmospheric, and ecological parameters alongside EDEN's continuous `settlement_index` (0 to 100). Because EDEN corrupted the database before going offline, the raw records suffered from severe unit-scale inconsistencies, typographical fragmentation, missing fields, and multi-label string concatenations. Our mission was to restore the dataset to analytical integrity, answer five fundamental habitability research questions, and formulate an independent scientific investigation.
 
 ---
 
@@ -121,9 +121,9 @@ A systematic audit of the raw archive revealed six major classes of data corrupt
 3. **Unit-Scale & Transform Corruption Recovery:**
    - *Cloud Coverage Fractional Scaling:* A subset of records stored `cloud_coverage_percent` as a decimal fraction in $[0, 1]$ instead of $[0, 100]$. Values $\le 1.0$ were rescaled by $\times 100$ into a unified percentage scale.
    - *Axial Tilt Normalization:* Certain records encoded `axial_tilt_deg` as a fraction of Earth's obliquity ($\le 1.0$) rather than degrees. Values $\le 1.0$ were unified via $\times 23.5^\circ$.
-   - *Logarithmic Orbital Period Corruption:* A subset of non-rogue planets recorded `orbital_period_days` in natural-log units ($0 < P \le 10$) rather than linear days. We unified these records via $\exp(P)$ while maintaining a logarithmic transformation across all planets for scale invariance.
+   - *Logarithmic Orbital Period Corruption:* A subset of non-rogue planets recorded `orbital_period_days` in natural-log units (0 < P ≤ 10) rather than linear days. We unified these records via $\exp(P)$ while maintaining a logarithmic transformation across all planets for scale invariance.
 4. **Astrophysical Zero-Constraints for Rogue Worlds:**
-   - Missing `orbital_distance_au` and `orbital_period_days` values on `rogue planet` records are physically meaningful (unbound to any host star) rather than random missing data; these were deterministically set to $0.0$.
+   - Missing `orbital_distance_au` and `orbital_period_days` values on `rogue planet` records are physically meaningful (unbound to any host star) rather than random missing data; these were deterministically set to 0.0.
 5. **Group-Conditional Median Imputation:**
    - Remaining missing continuous variables (`orbital_distance_au`, `orbital_period_days`, `day_length_hours`, `axial_tilt_deg`, `escape_velocity_kms`) were imputed using the median of each planet's canonical `planet_type` cohort.
 
@@ -134,16 +134,16 @@ A systematic audit of the raw archive revealed six major classes of data corrupt
 #### Q1: How does the recorded primary hazard relate to settlement potential?
 Primary environmental hazards exert one of the strongest influences on EDEN's settlement index:
 - **Top-Performing Hazard Groups:**
-  - **None (Hazard-Free):** Mean score = **$83.9$** ($100\%$ viable at $\ge 60$; $n = 9$)
-  - **Seasonal Storms:** Mean score = **$79.1$** ($100\%$ viable; $n = 3$)
-  - **Thermal Vents:** Mean score = **$73.7$** ($100\%$ viable; $n = 6$)
-  - **Unknown Anomaly:** Mean score = **$63.9$** ($56\%$ viable; $n = 1,315$)
+  - **None (Hazard-Free):** Mean score = **83.9** (100% viable at $\ge 60$; $n = 9$)
+  - **Seasonal Storms:** Mean score = **79.1** (100% viable; $n = 3$)
+  - **Thermal Vents:** Mean score = **73.7** (100% viable; $n = 6$)
+  - **Unknown Anomaly:** Mean score = **63.9** (56% viable; $n = 1,315$)
 - **Lowest-Performing Hazard Groups:**
-  - **Temperature Extremes:** Mean score = **$54.8$** ($29\%$ viable; $n = 41$)
-  - **Radiation:** Mean score = **$55.5$** ($30\%$ viable; $n = 1,241$)
-  - **Toxic Air:** Mean score = **$56.1$** ($31\%$ viable; $n = 829$)
-  - **Seismic Activity:** Mean score = **$57.2$** ($37\%$ viable; $n = 1,392$)
-- **Conclusion:** Worlds free of major hazards or experiencing predictable, localized phenomena (such as seasonal storms or geothermal vents) achieve high settlement viability. Conversely, pervasive life-threatening conditions  specifically thermal extremes, ionizing radiation, and toxic atmospheres  depress viability rates below $32\%$.
+  - **Temperature Extremes:** Mean score = **54.8** (29% viable; $n = 41$)
+  - **Radiation:** Mean score = **55.5** (30% viable; $n = 1,241$)
+  - **Toxic Air:** Mean score = **56.1** (31% viable; $n = 829$)
+  - **Seismic Activity:** Mean score = **57.2** (37% viable; $n = 1,392$)
+- **Conclusion:** Worlds free of major hazards or experiencing predictable, localized phenomena (such as seasonal storms or geothermal vents) achieve high settlement viability. Conversely, pervasive life-threatening conditions  specifically thermal extremes, ionizing radiation, and toxic atmospheres  depress viability rates below 32%.
 
 #### Q2: How do atmospheric gas levels relate to settlement potential?
 Atmospheric composition follows a non-linear physiological optimality curve rather than a monotonic trend:
@@ -157,28 +157,28 @@ Grouping planetary systems by host star configuration reveals a consistent stabi
 
 | Stellar System Architecture | Planet Count ($n$) | Mean Settlement Index | Viable Share ($\text{Index} \ge 60$) |
 | :--- | :---: | :---: | :---: |
-| **Single-Star Systems** | $4,010$ | **$60.1$** | **$45.0\%$** |
-| **Binary-Star Systems** | $1,841$ | $58.1$ | $39.0\%$ |
-| **Triple-Star Systems** | $306$ | $56.7$ | $33.0\%$ |
-| **Other / Complex Companion** | $243$ | $55.7$ | $29.0\%$ |
+| **Single-Star Systems** | 4,010 | **60.1** | **45.0%** |
+| **Binary-Star Systems** | 1,841 | 58.1 | 39.0% |
+| **Triple-Star Systems** | 306 | 56.7 | 33.0% |
+| **Other / Complex Companion** | 243 | 55.7 | 29.0% |
 
-- **Conclusion:** Single-star systems provide the highest average settlement score ($60.1$) and highest viability rate ($45\%$). Multi-star architectures introduce gravitational perturbations and complex radiative flux cycles that moderately reduce settlement viability.
+- **Conclusion:** Single-star systems provide the highest average settlement score (60.1) and highest viability rate (45%). Multi-star architectures introduce gravitational perturbations and complex radiative flux cycles that moderately reduce settlement viability.
 
 #### Q4: How do moons and rings relate to settlement potential?
-- **Moon Count:** Planets orbited by **one moon** achieve the highest well-supported average score (**$62.2$**), followed closely by **two moons** (**$60.7$**), whereas moonless worlds average **$56.6$** (consistent with the stabilizing effect of a large moon on planetary axial obliquity). However, across the entire range of moon counts, the linear correlation with settlement index is weak ($r = -0.09$), fluctuating erratically at higher moon counts where sample sizes are small.
-- **Planetary Rings:** Worlds **without rings** average **$59.4$**, outscoring **ringed planets** (**$56.8$**) by $2.6\text{ points}$.
-- **Conclusion:** While having $1\text{--}2$ moons and no ring system is mildly favorable, both features are secondary modifiers compared to atmospheric breathability, water, and radiation hazards.
+- **Moon Count:** Planets orbited by **one moon** achieve the highest well-supported average score (**62.2**), followed closely by **two moons** (**60.7**), whereas moonless worlds average **56.6** (consistent with the stabilizing effect of a large moon on planetary axial obliquity). However, across the entire range of moon counts, the linear correlation with settlement index is weak ($r = -0.09$), fluctuating erratically at higher moon counts where sample sizes are small.
+- **Planetary Rings:** Worlds **without rings** average **59.4**, outscoring **ringed planets** (**56.8**) by 2.6 points.
+- **Conclusion:** While having 1–2 moons and no ring system is mildly favorable, both features are secondary modifiers compared to atmospheric breathability, water, and radiation hazards.
 
 #### Q5: How do rogue and tidally locked planets compare with other planets?
 Comparing rotationally or orbitally constrained worlds against standard orbiting planets highlights clear environmental penalties:
 
 | Planetary Group | Planet Count ($n$) | Mean Settlement Index | Viable Share ($\text{Index} \ge 60$) |
 | :--- | :---: | :---: | :---: |
-| **Standard Orbiting Planets** | $5,127$ | **$59.8$** | **$44.0\%$** |
-| **Tidally Locked Planets** | $736$ | $56.6$ | $37.1\%$ |
-| **Rogue Planets** | $537$ | $56.7$ | $33.0\%$ |
+| **Standard Orbiting Planets** | 5,127 | **59.8** | **44.0%** |
+| **Tidally Locked Planets** | 736 | 56.6 | 37.1% |
+| **Rogue Planets** | 537 | 56.7 | 33.0% |
 
-- **Conclusion:** Both rogue planets (which lack stellar insolation and rely solely on internal geothermal/radiogenic heating) and tidally locked worlds (which experience permanent scorching day sides and frozen night sides) score approximately $3.1\text{--}3.2\text{ points}$ lower on average and exhibit $7\text{--}11\%$ lower viability rates than standard worlds. Nevertheless, roughly one-third of these worlds still achieve viability ($\ge 60$) when compensated by thick atmospheres, subsurface oceans, or geothermal energy.
+- **Conclusion:** Both rogue planets (which lack stellar insolation and rely solely on internal geothermal/radiogenic heating) and tidally locked worlds (which experience permanent scorching day sides and frozen night sides) score approximately 3.1–3.2 points lower on average and exhibit 7–11% lower viability rates than standard worlds. Nevertheless, roughly one-third of these worlds still achieve viability ($\ge 60$) when compensated by thick atmospheres, subsurface oceans, or geothermal energy.
 
 ---
 
@@ -193,12 +193,12 @@ Stratifying the cleaned archive across hydrological categories revealed one of t
 
 | Water Availability State | Mean Settlement Index | Viable Share ($\text{Index} \ge 60$) | Hydrological Regime |
 | :--- | :---: | :---: | :--- |
-| **Global Ocean** | **$65.4$** | **$65.0\%$** | Abundant accessible liquid surface water |
-| **Surface Seas** | **$63.8$** | **$62.0\%$** | Regional accessible liquid surface water |
-| **No Recorded Water (`None`)** | $50.5$ | $11.0\%$ | Desiccated / arid lithosphere |
-| **Surface Ice Only** | $47.9$ | $10.0\%$ | Cryogenic locked water |
+| **Global Ocean** | **65.4** | **65.0%** | Abundant accessible liquid surface water |
+| **Surface Seas** | **63.8** | **62.0%** | Regional accessible liquid surface water |
+| **No Recorded Water (`None`)** | 50.5 | 11.0% | Desiccated / arid lithosphere |
+| **Surface Ice Only** | 47.9 | 10.0% | Cryogenic locked water |
 
-- **Effect Size:** Worlds with a **global ocean** outscore dry worlds (`none`) by **$+14.9\text{ points}$** ($65.4$ vs. $50.5$) and are **nearly $6\times$ more likely to be viable for settlement** ($65\%$ vs. $11\%$).
+- **Effect Size:** Worlds with a **global ocean** outscore dry worlds (`none`) by **$+14.9\text{ points}$** (65.4 vs. 50.5) and are **nearly 6× more likely to be viable for settlement** (65% vs. 11%).
 - **Conclusion:** Accessible liquid surface water acts as a foundational prerequisite for both biological sustainability and climate regulation (via thermal inertia). While high radiation or toxic gases can still render an ocean world unviable, hydrological accessibility serves as the single most effective first-pass screening filter for colonizable worlds.
 
 ---
@@ -208,7 +208,7 @@ Stratifying the cleaned archive across hydrological categories revealed one of t
 ### 3.1 Problem Formulation & Target Structure
 To rebuild EDEN's lost decision engine, we trained a predictive machine learning pipeline on the 6,400 labeled planets to classify the 1,600 unseen test worlds into binary settlement viability (`viable_planet`):
 
-$$y = \mathbb{I}(\text{settlement index} \ge 60.0)$$
+$$\text{viable\_planet} = \mathbb{I}(\text{settlement\_index} \ge 60.0)$$
 
 In the training archive, **2,708 planets (42.31%)** are viable (`True` / 1) and **3,692 planets (57.69%)** are non-viable (`False` / 0).
 
